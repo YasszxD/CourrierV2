@@ -1,3 +1,5 @@
+from random import random
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -5,29 +7,26 @@ from django.shortcuts import render, redirect
 
 # Create your views here.
 from register import forms
-from register.forms import MyUserCreationForm, MyProfileCreationForm
-from register.models import Profile
+from register.forms import MyUserCreationForm, MyProfileCreationForm, MyCourierCreationForm
+from register.models import Profile, Courier
 
 
 def loginPage(request):
     page = 'login'
     if request.user.is_authenticated:
         return redirect('home')
+    # return CourierCreation(request)
 
     if request.method == 'POST':
         username = request.POST.get('username').lower()
         password = request.POST.get('password')
-
-      #  try:
-       #     user = User.objects.get(username=username)
-        #except:
-         #   messages.error(request, 'User does not exist')
 
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
             login(request, user)
             return redirect('home')
+            # return CourierCreation(request)
         else:
             messages.error(request, 'Username OR password is incorrect')
 
@@ -36,6 +35,9 @@ def loginPage(request):
 
 
 def homePage(request):
+    if request.method == 'POST':
+        return redirect('search'+'/'+request.POST.get('search'))
+
     context = {}
     return render(request, 'main.html', context)
 
@@ -60,13 +62,45 @@ def signupPage(request):
             login(request, user)
 
             return redirect('home')
+            #  return CourierCreation(request)
         else:
             messages.error(request, 'An error occurred during registration')
 
-    context = {'form': form , 'form1': profile_form}
+    context = {'form': form, 'form1': profile_form}
     return render(request, 'login.html', context)
 
 
 def logoutUser(request):
     logout(request)
     return redirect('home')
+
+
+def courierAdd(request):
+    form = MyCourierCreationForm()
+    if request.method == 'POST':
+        form = MyCourierCreationForm(request.POST)
+        if form.is_valid():
+            courier = form.save(commit=False)
+            if request.user.is_authenticated:
+                courier.sender = request.user
+                courier.price = random() * 100
+                courier.save()
+
+    context = {'form': form}
+    return render(request, 'add_courrier.html', context)
+
+
+def courierView(request):
+    objects = Courier.objects.filter(sender=request.user);
+    context = {'objects': objects}
+    return render(request, 'View_courier.html', context)
+
+
+def courierSearch(request, pk):
+
+    try:
+        object = Courier.objects.get(id=pk);
+    except Courier.DoesNotExist:
+        user = None
+    context = {'object': object}
+    return render(request, 'search_courier.html', context)

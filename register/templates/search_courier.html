@@ -1,0 +1,52 @@
+{% extends 'main.html'%}
+
+{% block content %}
+
+
+
+	<link rel="stylesheet" href="css/styleTable.css">
+
+	<section class="ftco-section">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="table-wrap">
+						<table class="table">
+						  <thead class="thead-primary">
+						    <tr>
+						      <th>#</th>
+						      <th>Full Name</th>
+								<th>Address</th>
+						      <th>Phone Number</th>
+								<th>Description</th>
+								<th>Weight</th>
+								<th>Price</th>
+								<th>Date</th>
+						    </tr>
+						  </thead>
+						  <tbody>
+						    <tr>
+						      <th scope="row">{{object.id}}</th>
+						      <td>{{object.recieverFullName}}</td>
+								<td>{{object.recieverAddress}}</td>
+						      <td>{{object.recieverPhoneNumber}}</td>
+								<td>{{object.description}}</td>
+								<td>{{object.weight}}</td>
+								<td>{{object.price}}</td>
+								<td>{{object.created}}</td>
+						    </tr>
+
+						  </tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</section>
+
+
+
+{% endblock content %}
+
+

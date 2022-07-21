@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import ModelForm
 
-from register.models import Profile
+from register.models import Profile, Courier
 
 
 class MyUserCreationForm(UserCreationForm):
@@ -28,6 +28,21 @@ class MyUserCreationForm(UserCreationForm):
 
 
 class MyProfileCreationForm(ModelForm):
+    city = forms.CharField(max_length=30)
+    postal_code = forms.IntegerField(max_value=9999,min_value=1000)
+    phone_number =forms.IntegerField(max_value=99999999,min_value=20000000)
+
     class Meta:
         model = Profile
-        fields = ('location', 'phoneNumber')
+        fields = ('city', 'postal_code', 'phone_number')
+
+
+class MyCourierCreationForm(ModelForm):
+    recieverFullName = forms.CharField(max_length=30, required=True)
+    recieverAddress = forms.CharField(max_length=30, required=True)
+    recieverPhoneNumber = forms.CharField(max_length=8, required=True)
+    description = forms.CharField(max_length=300, required=True)
+    weight = forms.CharField(max_length=4, required=True)
+    class Meta:
+        model = Courier
+        fields =['recieverFullName','recieverAddress','recieverPhoneNumber','description', 'weight']
